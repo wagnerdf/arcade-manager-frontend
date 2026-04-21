@@ -1,14 +1,24 @@
 import { useRouter } from "expo-router";
 import { Button, Text, View } from "react-native";
-import { useAuth } from "../src/context/AuthContext";
+import { authApi } from "../src/services/authApi";
 
 export default function Login() {
   const router = useRouter();
-  const { login } = useAuth();
 
-  function handleLogin() {
-    login();
-    router.replace("/");
+  async function handleLogin() {
+    try {
+      const response = await authApi.post("/login", {
+        email: "teste",
+        password: "159357",
+      });
+
+      console.log("RESPOSTA:", response.data);
+
+      // simulando fluxo
+      router.replace("/");
+    } catch (error) {
+      console.log("ERRO:", error);
+    }
   }
 
   return (
