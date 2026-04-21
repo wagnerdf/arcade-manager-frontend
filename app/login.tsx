@@ -1,29 +1,33 @@
 import { useRouter } from "expo-router";
-import { Button, Text, View } from "react-native";
-import { authApi } from "../src/services/authApi";
+import { useState } from "react";
+import { Button, Text, TextInput, View } from "react-native";
+import { useAuth } from "../src/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    try {
-      const response = await authApi.post("/login", {
-        email: "teste",
-        password: "159357",
-      });
-
-      console.log("RESPOSTA:", response.data);
-
-      // simulando fluxo
-      router.replace("/");
-    } catch (error) {
-      console.log("ERRO:", error);
-    }
+    await login(email, password);
+    router.replace("/");
   }
 
   return (
     <View>
       <Text>Login Screen</Text>
+
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
+
+      <TextInput
+        placeholder="Senha"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+
       <Button title="Fazer Login" onPress={handleLogin} />
     </View>
   );
