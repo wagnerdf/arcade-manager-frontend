@@ -4,18 +4,21 @@ import { getItem, removeItem, setItem } from "../services/storage";
 
 type AuthContextType = {
   userToken: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   userToken: null,
-  login: async () => {},
+  loading: true,
+  login: async () => false,
   logout: () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userToken, setUserToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   async function login(email: string, password: string) {
     try {
@@ -27,32 +30,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = response.data.token;
 
       setUserToken(token);
-
       await setItem("token", token);
+
+      return true; // ✅ sucesso
     } catch (error) {
       console.log("Erro no login:", error);
+      return false; // ❌ falhou
     }
   }
-
-  useEffect(() => {
-    async function loadToken() {
-      const token = await getItem("token");
-
-      if (token) {
-        setUserToken(token);
-      }
-    }
-
-    loadToken();
-  }, []);
 
   async function logout() {
     setUserToken(null);
     await removeItem("token");
   }
 
+  useEffect(() => {
+    async function loadToken() {
+      try {
+        const token = await getItem("token");
+
+        if (token) {
+          setUserToken(token);
+        }
+      } catch (error) {
+        console.log("Erro ao carregar token:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadToken();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ userToken, login, logout }}>
+    <AuthContext.Provider value={{ userToken, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

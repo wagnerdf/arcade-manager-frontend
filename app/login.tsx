@@ -17,8 +17,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    await login(email, password);
-    router.replace("/(tabs)");
+    const success = await login(email, password);
+
+    if (success) {
+      router.replace("/(tabs)");
+    } else {
+      alert("Email ou senha inválidos");
+    }
   }
 
   return (
