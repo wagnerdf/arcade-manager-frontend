@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { authApi } from "../services/authApi";
+import { getItem, removeItem, setItem } from "../services/storage";
 
 type AuthContextType = {
   userToken: string | null;
@@ -27,14 +28,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUserToken(token);
 
-      console.log("TOKEN SALVO:", token);
+      await setItem("token", token);
     } catch (error) {
       console.log("Erro no login:", error);
     }
   }
 
-  function logout() {
+  useEffect(() => {
+    async function loadToken() {
+      const token = await getItem("token");
+
+      if (token) {
+        setUserToken(token);
+      }
+    }
+
+    loadToken();
+  }, []);
+
+  async function logout() {
     setUserToken(null);
+    await removeItem("token");
   }
 
   return (
