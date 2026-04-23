@@ -14,12 +14,14 @@ function RootNavigator() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {userToken ? (
-        <Stack.Screen name="(tabs)" />
-      ) : (
-        <Stack.Screen name="index" />
-      )}
+    <Stack
+      key={userToken ? "auth-stack" : "guest-stack"}
+      screenOptions={{ headerShown: false }}
+      initialRouteName={userToken ? "(tabs)" : "index"}
+    >
+      <Stack.Screen name="index" />
+      <Stack.Screen name="login" />
+      <Stack.Screen name="(tabs)" />
     </Stack>
   );
 }

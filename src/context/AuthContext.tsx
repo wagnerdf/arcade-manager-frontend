@@ -6,14 +6,14 @@ type AuthContextType = {
   userToken: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
   userToken: null,
   loading: true,
   login: async () => false,
-  logout: () => {},
+  logout: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -40,8 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function logout() {
-    setUserToken(null);
-    await removeItem("token");
+    console.log("EXECUTANDO LOGOUT");
+    await removeItem("token"); // primeiro limpa storage
+    setUserToken(null); // depois muda estado
   }
 
   useEffect(() => {
