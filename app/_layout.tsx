@@ -17,11 +17,17 @@ function RootNavigator() {
     <Stack
       key={userToken ? "auth-stack" : "guest-stack"}
       screenOptions={{ headerShown: false }}
-      initialRouteName={userToken ? "(tabs)" : "index"}
     >
-      <Stack.Screen name="index" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="(tabs)" />
+      {userToken ? (
+        // 🔐 ROTAS LOGADAS
+        <Stack.Screen name="(tabs)" />
+      ) : (
+        // 🔓 ROTAS PÚBLICAS
+        <>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="login" />
+        </>
+      )}
     </Stack>
   );
 }
