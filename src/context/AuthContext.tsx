@@ -40,7 +40,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function logout() {
-    console.log("EXECUTANDO LOGOUT");
     await removeItem("token"); // primeiro limpa storage
     setUserToken(null); // depois muda estado
   }

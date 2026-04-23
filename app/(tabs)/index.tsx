@@ -6,14 +6,16 @@ export default function HomeScreen() {
   const { logout } = useAuth();
 
   async function handleLogout() {
-    console.log("CLICOU NO LOGOUT");
+    try {
+      await logout();
 
-    await logout();
+      router.replace("/login");
+    } catch (error) {
+      console.log("Erro no logout:", error);
 
-    if (typeof window !== "undefined") {
-      window.location.href = "/"; // 🔥 força reload no web
-    } else {
-      router.replace("/"); // mobile
+      alert("Erro ao sair da conta. Tente novamente.");
+
+      router.replace("/login");
     }
   }
 

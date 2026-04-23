@@ -13,7 +13,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      key={userToken ? "tabs-auth" : "tabs-guest"} // 🔥 ISSO AQUI resolve
+      key={userToken ? "tabs-auth" : "tabs-guest"}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
