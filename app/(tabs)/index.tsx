@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../src/context/AuthContext";
 
 export default function HomeScreen() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   async function handleLogout() {
     try {
@@ -23,7 +23,15 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>🎮 Arcade Manager</Text>
 
-      <Text style={styles.subtitle}>Você está logado no sistema</Text>
+      <Text style={styles.subtitle}>
+        Bem-vindo, {user?.fullName || "Usuário"}
+      </Text>
+
+      <Text style={styles.subtitle}>
+        {user ? `${user.address.city} - ${user.address.state}` : ""}
+      </Text>
+
+      <Text style={styles.subtitle}>{user?.email || ""}</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Deslogar</Text>

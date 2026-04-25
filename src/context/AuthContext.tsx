@@ -1,16 +1,28 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../services/api";
 import { authApi } from "../services/authApi";
 import { getItem, removeItem, setItem } from "../services/storage";
 
 type AuthContextType = {
   userToken: string | null;
+  user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 };
 
+type User = {
+  fullName: string;
+  email: string;
+  address: {
+    city: string;
+    state: string;
+  };
+};
+
 const AuthContext = createContext<AuthContextType>({
   userToken: null,
+  user: null,
   loading: true,
   login: async () => false,
   logout: async () => {},
@@ -19,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   async function login(email: string, password: string) {
     try {
@@ -32,10 +45,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUserToken(token);
       await setItem("token", token);
 
-      return true; // ✅ sucesso
+      // BUSCAR DADOS DO USUÁRIO
+      const userResponse = await api.get("/users/me");
+
+      const userData = userResponse.data;
+
+      setUser(userData);
+
+      await setItem("user", JSON.stringify(userData));
+
+      return true;
     } catch (error) {
       console.log("Erro no login:", error);
-      return false; // ❌ falhou
+      return false;
     }
   }
 
@@ -48,12 +70,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function loadToken() {
       try {
         const token = await getItem("token");
+        const userStorage = await getItem("user");
 
         if (token) {
           setUserToken(token);
         }
+
+        if (userStorage) {
+          setUser(JSON.parse(userStorage));
+        }
       } catch (error) {
-        console.log("Erro ao carregar token:", error);
+        console.log("Erro ao carregar dados:", error);
       } finally {
         setLoading(false);
       }
@@ -63,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userToken, loading, login, logout }}>
+    <AuthContext.Provider value={{ userToken, user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
