@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../src/context/AuthContext";
 import { getUserGameStats } from "../../src/services/userGameApi";
 
@@ -42,7 +43,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* HEADER */}
       <Text style={styles.title}>🎮 Arcade Manager</Text>
 
@@ -92,7 +93,7 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Deslogar</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0F172A",
     padding: 20,
+    paddingTop: 10,
   },
 
   title: {
