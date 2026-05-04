@@ -1,8 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../src/context/AuthContext";
+import { getUserGameStats } from "../../src/services/userGameApi";
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
@@ -15,6 +17,27 @@ export default function HomeScreen() {
       console.log("Erro no logout:", error);
       alert("Erro ao sair da conta. Tente novamente.");
       router.replace("/login");
+    }
+  }
+
+  const [stats, setStats] = useState({
+    total: 0,
+    playing: 0,
+    completed: 0,
+    backlog: 0,
+    wishlist: 0,
+  });
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  async function loadStats() {
+    try {
+      const data = await getUserGameStats();
+      setStats(data);
+    } catch (error) {
+      console.log("Erro ao buscar stats:", error);
     }
   }
 
@@ -39,11 +62,16 @@ export default function HomeScreen() {
         contentFit="cover"
       />
 
-      {/* STATS (mock por enquanto) */}
+      {/* Stats reais */}
       <View style={styles.statsContainer}>
-        <StatCard title="Jogos" value="12" icon="game-controller" />
-        <StatCard title="Jogando" value="3" icon="play" />
-        <StatCard title="Zerados" value="5" icon="trophy" />
+        <StatCard title="Jogos" value={stats.total} icon="game-controller" />
+        <StatCard title="Jogando" value={stats.playing} icon="play" />
+        <StatCard title="Zerados" value={stats.completed} icon="trophy" />
+      </View>
+
+      <View style={styles.statsContainer}>
+        <StatCard title="Backlog" value={stats.backlog} icon="albums" />
+        <StatCard title="Wishlist" value={stats.wishlist} icon="heart" />
       </View>
 
       {/* AÇÕES */}
