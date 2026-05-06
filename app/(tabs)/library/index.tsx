@@ -1,11 +1,20 @@
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getUserLibrary } from "../../../src/services/userGameApi";
 
 export default function LibraryScreen() {
   const [games, setGames] = useState([]);
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
   useEffect(() => {
     loadGames();
@@ -22,6 +31,26 @@ export default function LibraryScreen() {
   }
 
   function renderItem({ item }: any) {
+    if (viewMode === "grid") {
+      return (
+        <TouchableOpacity
+          style={styles.gridCard}
+          onPress={() =>
+            router.push({
+              pathname: "/library/[id]",
+              params: { id: item.id },
+            })
+          }
+        >
+          <Image source={{ uri: item.coverUrl }} style={styles.coverImage} />
+
+          <Text style={styles.gridTitle} numberOfLines={1}>
+            {item.gameTitle}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+
     return (
       <TouchableOpacity
         style={styles.card}
@@ -49,14 +78,30 @@ export default function LibraryScreen() {
         <Text style={styles.addButtonText}>+ Add Game</Text>
       </TouchableOpacity>
 
+      <View style={styles.header}>
+        <Text style={styles.title}>📚 Minha Biblioteca</Text>
+
+        <TouchableOpacity
+          style={styles.viewButton}
+          onPress={() => setViewMode(viewMode === "list" ? "grid" : "list")}
+        >
+          <Ionicons
+            name={viewMode === "list" ? "grid" : "list"}
+            size={22}
+            color="#fff"
+          />
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={games}
+        key={viewMode}
+        numColumns={viewMode === "grid" ? 2 : 1}
         keyExtractor={(item: any) => item.id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        ListHeaderComponent={
-          <Text style={styles.title}>📚 Minha Biblioteca</Text>
+        columnWrapperStyle={
+          viewMode === "grid" ? { justifyContent: "space-between" } : undefined
         }
       />
     </SafeAreaView>
@@ -105,6 +150,37 @@ const styles = StyleSheet.create({
 
   addButtonText: {
     color: "#000",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  viewButton: {
+    backgroundColor: "#1E293B",
+    padding: 10,
+    borderRadius: 10,
+  },
+
+  gridCard: {
+    width: "48%",
+    marginBottom: 20,
+  },
+
+  coverImage: {
+    width: "100%",
+    height: 220,
+    borderRadius: 12,
+    backgroundColor: "#1E293B",
+  },
+
+  gridTitle: {
+    color: "#fff",
+    marginTop: 8,
     fontSize: 14,
     fontWeight: "bold",
   },
