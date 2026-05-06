@@ -15,7 +15,6 @@ export default function LibraryScreen() {
     try {
       const data = await getUserLibrary(0);
 
-      // ⚠️ backend retorna Page → precisamos do content
       setGames(data.content || []);
     } catch (error) {
       console.log("Erro ao buscar library:", error);
@@ -34,19 +33,31 @@ export default function LibraryScreen() {
         }
       >
         <Text style={styles.gameTitle}>{item.gameTitle}</Text>
-        <Text style={styles.gameInfo}>{item.status}</Text>
+
+        <Text style={styles.gameInfo}>{item.statusDescription}</Text>
       </TouchableOpacity>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Minha Biblioteca</Text>
+      {/* HEADER */}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => router.push("/library/create")}
+      >
+        <Text style={styles.addButtonText}>+ Add Game</Text>
+      </TouchableOpacity>
 
       <FlatList
         data={games}
         keyExtractor={(item: any) => item.id}
         renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        ListHeaderComponent={
+          <Text style={styles.title}>📚 Minha Biblioteca</Text>
+        }
       />
     </SafeAreaView>
   );
@@ -83,5 +94,18 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
     fontSize: 12,
     marginTop: 5,
+  },
+  addButton: {
+    backgroundColor: "#22C55E",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  addButtonText: {
+    color: "#000",
+    fontSize: 14,
+    fontWeight: "bold",
   },
 });
