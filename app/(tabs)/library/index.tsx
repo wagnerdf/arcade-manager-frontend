@@ -94,6 +94,8 @@ export default function LibraryScreen() {
       </View>
 
       <FlatList
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
         data={games}
         key={viewMode}
         numColumns={viewMode === "grid" ? 2 : 1}

@@ -2,7 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../src/context/AuthContext";
 import { getUserGameStats } from "../../src/services/userGameApi";
@@ -44,55 +50,60 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* HEADER */}
-      <Text style={styles.title}>🎮 Arcade Manager</Text>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 40 }}
+      >
+        {/* HEADER */}
+        <Text style={styles.title}>🎮 Arcade Manager</Text>
 
-      <Text style={styles.subtitle}>
-        Bem-vindo, {user?.fullName || "Usuário"}
-      </Text>
+        <Text style={styles.subtitle}>
+          Bem-vindo, {user?.fullName || "Usuário"}
+        </Text>
 
-      <Text style={styles.info}>
-        {user ? `${user.address.city} - ${user.address.state}` : ""}
-      </Text>
+        <Text style={styles.info}>
+          {user ? `${user.address.city} - ${user.address.state}` : ""}
+        </Text>
 
-      <Text style={styles.info}>{user?.email || ""}</Text>
+        <Text style={styles.info}>{user?.email || ""}</Text>
 
-      <Image
-        source={require("../../assets/images/gamer.png")}
-        style={styles.gamerImage}
-        contentFit="cover"
-      />
-
-      {/* Stats reais */}
-      <View style={styles.statsContainer}>
-        <StatCard title="Jogos" value={stats.total} icon="game-controller" />
-        <StatCard title="Jogando" value={stats.playing} icon="play" />
-        <StatCard title="Zerados" value={stats.completed} icon="trophy" />
-      </View>
-
-      <View style={styles.statsContainer}>
-        <StatCard title="Backlog" value={stats.backlog} icon="albums" />
-        <StatCard title="Wishlist" value={stats.wishlist} icon="heart" />
-      </View>
-
-      {/* AÇÕES */}
-      <View style={styles.actionsContainer}>
-        <ActionButton
-          title="Buscar"
-          icon="search"
-          onPress={() => router.push("/search")}
+        <Image
+          source={require("../../assets/images/gamer.png")}
+          style={styles.gamerImage}
+          contentFit="cover"
         />
-        <ActionButton
-          title="Library"
-          icon="game-controller"
-          onPress={() => router.push("/library")}
-        />
-      </View>
 
-      {/* LOGOUT */}
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Deslogar</Text>
-      </TouchableOpacity>
+        {/* Stats reais */}
+        <View style={styles.statsContainer}>
+          <StatCard title="Jogos" value={stats.total} icon="game-controller" />
+          <StatCard title="Jogando" value={stats.playing} icon="play" />
+          <StatCard title="Zerados" value={stats.completed} icon="trophy" />
+        </View>
+
+        <View style={styles.statsContainer}>
+          <StatCard title="Backlog" value={stats.backlog} icon="albums" />
+          <StatCard title="Wishlist" value={stats.wishlist} icon="heart" />
+        </View>
+
+        {/* AÇÕES */}
+        <View style={styles.actionsContainer}>
+          <ActionButton
+            title="Buscar"
+            icon="search"
+            onPress={() => router.push("/search")}
+          />
+          <ActionButton
+            title="Library"
+            icon="game-controller"
+            onPress={() => router.push("/library")}
+          />
+        </View>
+
+        {/* LOGOUT */}
+        <TouchableOpacity style={styles.button} onPress={handleLogout}>
+          <Text style={styles.buttonText}>Deslogar</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
