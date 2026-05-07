@@ -50,23 +50,23 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* HEADER */}
+      <Text style={styles.title}>🎮 Arcade Manager</Text>
+
+      <Text style={styles.subtitle}>
+        Bem-vindo, {user?.fullName || "Usuário"}
+      </Text>
+
+      <Text style={styles.info}>
+        {user ? `${user.address.city} - ${user.address.state}` : ""}
+      </Text>
+
+      <Text style={styles.info}>{user?.email || ""}</Text>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        {/* HEADER */}
-        <Text style={styles.title}>🎮 Arcade Manager</Text>
-
-        <Text style={styles.subtitle}>
-          Bem-vindo, {user?.fullName || "Usuário"}
-        </Text>
-
-        <Text style={styles.info}>
-          {user ? `${user.address.city} - ${user.address.state}` : ""}
-        </Text>
-
-        <Text style={styles.info}>{user?.email || ""}</Text>
-
         <Image
           source={require("../../assets/images/gamer.png")}
           style={styles.gamerImage}
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   info: {
     color: "#64748B",
     fontSize: 14,
+    marginBottom: 10,
   },
 
   statsContainer: {
