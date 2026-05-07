@@ -14,15 +14,12 @@ export default function CreateGameScreen() {
   const [gameTitle, setGameTitle] = useState("");
 
   function handleCancel() {
-    router.back();
+    router.replace("/library");
   }
 
   function handleSave() {
     console.log("Salvar jogo:", gameTitle);
-
-    // depois vamos integrar com API aqui
-
-    router.back();
+    router.replace("/library");
   }
 
   return (
