@@ -33,7 +33,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="library/index"
+        name="library"
         options={{
           title: "Library",
           tabBarIcon: ({ color, size }) => (
@@ -59,20 +59,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="library/[id]"
-        options={{
-          href: null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="library/create"
-        options={{
-          href: null,
         }}
       />
     </Tabs>

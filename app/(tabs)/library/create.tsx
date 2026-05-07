@@ -50,12 +50,12 @@ export default function CreateGameScreen() {
 
       {/* ACTIONS */}
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </TouchableOpacity>
-
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveText}>Salvar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+          <Text style={styles.cancelText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -106,13 +106,12 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#334155",
-    marginBottom: 10,
     alignItems: "center",
+    backgroundColor: "#EF4444",
   },
 
   cancelText: {
-    color: "#94A3B8",
+    color: "#000",
     fontWeight: "bold",
   },
 
@@ -120,6 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#22C55E",
     padding: 14,
     borderRadius: 10,
+    marginBottom: 10,
     alignItems: "center",
   },
 
