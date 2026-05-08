@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import placeholderImage from "../../../assets/images/placeholder.png";
 import { searchGames } from "../../../src/services/externalGameApi";
 
 export default function CreateGameScreen() {
@@ -71,14 +72,21 @@ export default function CreateGameScreen() {
           value={query}
           onChangeText={handleSearch}
         />
+        {loading && (
+          <Text style={{ color: "#fff", marginTop: 10 }}>Buscando...</Text>
+        )}
         {/* RESULTADOS */}
         <FlatList
+          style={{ marginTop: 10 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           data={results}
           keyExtractor={(item: any) => item.externalId.toString()}
           renderItem={({ item }: any) => (
             <View style={styles.resultCard}>
               <Image
-                source={{ uri: item.backgroundImage }}
+                source={{
+                  uri: item.backgroundImage || placeholderImage,
+                }}
                 style={styles.resultImage}
               />
 
