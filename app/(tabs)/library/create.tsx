@@ -15,17 +15,28 @@ import placeholderImage from "../../../assets/images/placeholder.png";
 import { searchGames } from "../../../src/services/externalGameApi";
 
 export default function CreateGameScreen() {
-  const [gameTitle, setGameTitle] = useState("");
+  // const [gameTitle, setGameTitle] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedGame, setSelectedGame] = useState<any>(null);
 
   function handleCancel() {
     router.replace("/library");
   }
 
   function handleSave() {
-    console.log("Salvar jogo:", gameTitle);
+    if (!selectedGame) {
+      alert("Selecione um jogo primeiro!");
+      return;
+    }
+
+    console.log("Salvar jogo:", {
+      externalId: selectedGame.externalId,
+      name: selectedGame.name,
+      cover: selectedGame.backgroundImage,
+    });
+
     router.replace("/library");
   }
 
@@ -75,6 +86,11 @@ export default function CreateGameScreen() {
         {loading && (
           <Text style={{ color: "#fff", marginTop: 10 }}>Buscando...</Text>
         )}
+        {selectedGame && (
+          <Text style={styles.selectedText}>
+            Selecionado: {selectedGame.name}
+          </Text>
+        )}
       </View>
 
       {/* RESULTADOS */}
@@ -84,11 +100,24 @@ export default function CreateGameScreen() {
         data={results}
         keyExtractor={(item: any) => item.externalId.toString()}
         renderItem={({ item }: any) => (
-          <View style={styles.resultCard}>
+          <TouchableOpacity
+            style={[
+              styles.resultCard,
+              selectedGame?.externalId === item.externalId &&
+                styles.selectedCard,
+            ]}
+            onPress={() => {
+              setSelectedGame(item);
+              setResults([]);
+              setQuery(item.name);
+            }}
+          >
             <Image
-              source={{
-                uri: item.backgroundImage || placeholderImage,
-              }}
+              source={
+                item.backgroundImage
+                  ? { uri: item.backgroundImage }
+                  : placeholderImage
+              }
               style={styles.resultImage}
             />
 
@@ -99,7 +128,7 @@ export default function CreateGameScreen() {
                 {item.externalId}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         showsVerticalScrollIndicator={false}
       />
@@ -207,5 +236,17 @@ const styles = StyleSheet.create({
   resultInfo: {
     color: "#94A3B8",
     fontSize: 12,
+  },
+
+  selectedCard: {
+    borderWidth: 2,
+    borderColor: "#22c55e",
+  },
+
+  selectedText: {
+    color: "#22c55e",
+    marginTop: 10,
+    marginBottom: 10,
+    fontWeight: "bold",
   },
 });
