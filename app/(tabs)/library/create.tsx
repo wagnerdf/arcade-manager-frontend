@@ -75,29 +75,34 @@ export default function CreateGameScreen() {
         {loading && (
           <Text style={{ color: "#fff", marginTop: 10 }}>Buscando...</Text>
         )}
-        {/* RESULTADOS */}
-        <FlatList
-          style={{ marginTop: 10 }}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          data={results}
-          keyExtractor={(item: any) => item.externalId.toString()}
-          renderItem={({ item }: any) => (
-            <View style={styles.resultCard}>
-              <Image
-                source={{
-                  uri: item.backgroundImage || placeholderImage,
-                }}
-                style={styles.resultImage}
-              />
-
-              <View style={{ flex: 1 }}>
-                <Text style={styles.resultTitle}>{item.name}</Text>
-                <Text style={styles.resultInfo}>{item.released}</Text>
-              </View>
-            </View>
-          )}
-        />
       </View>
+
+      {/* RESULTADOS */}
+      <FlatList
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        data={results}
+        keyExtractor={(item: any) => item.externalId.toString()}
+        renderItem={({ item }: any) => (
+          <View style={styles.resultCard}>
+            <Image
+              source={{
+                uri: item.backgroundImage || placeholderImage,
+              }}
+              style={styles.resultImage}
+            />
+
+            <View style={{ flex: 1 }}>
+              <Text style={styles.resultTitle}>{item.name}</Text>
+              <Text style={styles.resultInfo}>
+                {item.released ? item.released : "Sem data"} • ID:{" "}
+                {item.externalId}
+              </Text>
+            </View>
+          </View>
+        )}
+        showsVerticalScrollIndicator={false}
+      />
 
       {/* ACTIONS */}
       <View style={styles.actions}>
