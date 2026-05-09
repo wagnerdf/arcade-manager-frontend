@@ -45,6 +45,8 @@ export default function CreateGameScreen() {
   async function handleSearch(text: string) {
     setQuery(text);
 
+    setSelectedGame(null);
+
     if (!text || text.length < 3) {
       setResults([]);
       return;
