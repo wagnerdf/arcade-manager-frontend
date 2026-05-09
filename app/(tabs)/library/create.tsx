@@ -20,6 +20,8 @@ export default function CreateGameScreen() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedGame, setSelectedGame] = useState<any>(null);
+  const [status, setStatus] = useState("BACKLOG");
+  const [mediaType, setMediaType] = useState("GAME");
 
   function handleCancel() {
     router.replace("/library");
@@ -86,10 +88,64 @@ export default function CreateGameScreen() {
         {loading && (
           <Text style={{ color: "#fff", marginTop: 10 }}>Buscando...</Text>
         )}
+
+        {/* JOGO SELECIONADO */}
         {selectedGame && (
-          <Text style={styles.selectedText}>
-            Selecionado: {selectedGame.name}
-          </Text>
+          <>
+            <View style={styles.selectedGameCard}>
+              <Image
+                source={
+                  selectedGame.backgroundImage
+                    ? { uri: selectedGame.backgroundImage }
+                    : placeholderImage
+                }
+                style={styles.selectedImage}
+              />
+
+              <View style={{ flex: 1 }}>
+                <Text style={styles.selectedTitle}>{selectedGame.name}</Text>
+
+                <Text style={styles.selectedInfo}>
+                  {selectedGame.released || "Sem data"}
+                </Text>
+              </View>
+            </View>
+
+            {/* STATUS */}
+            <Text style={styles.label}>Status</Text>
+
+            <View style={styles.optionRow}>
+              {["BACKLOG", "PLAYING", "COMPLETED"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  style={[
+                    styles.optionButton,
+                    status === item && styles.selectedOption,
+                  ]}
+                  onPress={() => setStatus(item)}
+                >
+                  <Text style={styles.optionText}>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {/* MEDIA TYPE */}
+            <Text style={styles.label}>Tipo</Text>
+
+            <View style={styles.optionRow}>
+              {["GAME", "DLC"].map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  style={[
+                    styles.optionButton,
+                    mediaType === item && styles.selectedOption,
+                  ]}
+                  onPress={() => setMediaType(item)}
+                >
+                  <Text style={styles.optionText}>{item}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
         )}
       </View>
 
@@ -247,6 +303,53 @@ const styles = StyleSheet.create({
     color: "#22c55e",
     marginTop: 10,
     marginBottom: 10,
+    fontWeight: "bold",
+  },
+
+  selectedGameCard: {
+    flexDirection: "row",
+    backgroundColor: "#1E293B",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  selectedImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+
+  selectedTitle: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+
+  selectedInfo: {
+    color: "#94A3B8",
+    fontSize: 12,
+  },
+
+  optionRow: {
+    flexDirection: "row",
+    marginBottom: 15,
+  },
+
+  optionButton: {
+    backgroundColor: "#1E293B",
+    padding: 10,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+
+  selectedOption: {
+    backgroundColor: "#22c55e",
+  },
+
+  optionText: {
+    color: "#fff",
     fontWeight: "bold",
   },
 });
