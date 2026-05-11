@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import placeholderImage from "../../../assets/images/placeholder.png";
 import { searchGames } from "../../../src/services/externalGameApi";
@@ -21,10 +22,22 @@ export default function CreateGameScreen() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedGame, setSelectedGame] = useState<any>(null);
-  const [status, setStatus] = useState("BACKLOG");
-  const [mediaType, setMediaType] = useState("GAME");
+  const [status, setStatus] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<string | null>(null);
   const [statusOptions, setStatusOptions] = useState<any[]>([]);
   const [mediaTypeOptions, setMediaTypeOptions] = useState<any[]>([]);
+  const [openStatus, setOpenStatus] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
+
+  const statusItems = statusOptions.map((item) => ({
+    label: item.label,
+    value: item.code,
+  }));
+
+  const mediaItems = mediaTypeOptions.map((item) => ({
+    label: item.label,
+    value: item.code,
+  }));
 
   useEffect(() => {
     loadEnums();
@@ -37,15 +50,6 @@ export default function CreateGameScreen() {
 
       setStatusOptions(statusData);
       setMediaTypeOptions(mediaData);
-
-      // default inicial (primeiro item)
-      if (statusData.length > 0) {
-        setStatus(statusData[0].code);
-      }
-
-      if (mediaData.length > 0) {
-        setMediaType(mediaData[0].code);
-      }
     } catch (error) {
       console.log("Erro ao carregar enums:", error);
     }
@@ -57,7 +61,12 @@ export default function CreateGameScreen() {
 
   function handleSave() {
     if (!selectedGame) {
-      alert("Selecione um jogo primeiro!");
+      alert("Selecione um jogo!");
+      return;
+    }
+
+    if (!status || !mediaType) {
+      alert("Preencha status e tipo!");
       return;
     }
 
@@ -144,36 +153,28 @@ export default function CreateGameScreen() {
             {/* STATUS */}
             <Text style={styles.label}>Status</Text>
 
-            <View style={styles.optionRow}>
-              {statusOptions.map((item) => (
-                <TouchableOpacity
-                  key={item.code}
-                  style={[
-                    styles.optionButton,
-                    status === item.code && styles.selectedOption,
-                  ]}
-                  onPress={() => setStatus(item.code)}
-                >
-                  <Text style={styles.optionText}>{item.label}</Text>
-                </TouchableOpacity>
-              ))}
+            <View style={{ zIndex: 2000 }}>
+              <DropDownPicker
+                open={openStatus}
+                value={status}
+                items={statusItems}
+                setOpen={setOpenStatus}
+                setValue={setStatus}
+                placeholder="Selecione o status..."
+              />
             </View>
             {/* MEDIA TYPE */}
             <Text style={styles.label}>Tipo</Text>
 
-            <View style={styles.optionRow}>
-              {mediaTypeOptions.map((item) => (
-                <TouchableOpacity
-                  key={item.code}
-                  style={[
-                    styles.optionButton,
-                    mediaType === item.code && styles.selectedOption,
-                  ]}
-                  onPress={() => setMediaType(item.code)}
-                >
-                  <Text style={styles.optionText}>{item.label}</Text>
-                </TouchableOpacity>
-              ))}
+            <View style={{ zIndex: 1000 }}>
+              <DropDownPicker
+                open={openMedia}
+                value={mediaType}
+                items={mediaItems}
+                setOpen={setOpenMedia}
+                setValue={setMediaType}
+                placeholder="Selecione o tipo..."
+              />
             </View>
           </>
         )}
@@ -254,6 +255,7 @@ const styles = StyleSheet.create({
   },
 
   form: {
+    zIndex: 3000,
     marginBottom: 30,
   },
 
@@ -270,6 +272,7 @@ const styles = StyleSheet.create({
   },
 
   actions: {
+    zIndex: 0,
     marginTop: "auto",
   },
 
@@ -381,5 +384,11 @@ const styles = StyleSheet.create({
   optionText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+
+  dropdown: {
+    backgroundColor: "#1E293B",
+    borderColor: "#334155",
+    marginBottom: 15,
   },
 });
