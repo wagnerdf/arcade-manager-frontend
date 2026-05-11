@@ -1,6 +1,7 @@
+import { getGameStatus, getMediaTypes } from "@/src/services/enumApi";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -22,6 +23,33 @@ export default function CreateGameScreen() {
   const [selectedGame, setSelectedGame] = useState<any>(null);
   const [status, setStatus] = useState("BACKLOG");
   const [mediaType, setMediaType] = useState("GAME");
+  const [statusOptions, setStatusOptions] = useState<any[]>([]);
+  const [mediaTypeOptions, setMediaTypeOptions] = useState<any[]>([]);
+
+  useEffect(() => {
+    loadEnums();
+  }, []);
+
+  async function loadEnums() {
+    try {
+      const statusData = await getGameStatus();
+      const mediaData = await getMediaTypes();
+
+      setStatusOptions(statusData);
+      setMediaTypeOptions(mediaData);
+
+      // default inicial (primeiro item)
+      if (statusData.length > 0) {
+        setStatus(statusData[0].code);
+      }
+
+      if (mediaData.length > 0) {
+        setMediaType(mediaData[0].code);
+      }
+    } catch (error) {
+      console.log("Erro ao carregar enums:", error);
+    }
+  }
 
   function handleCancel() {
     router.replace("/library");
@@ -117,16 +145,16 @@ export default function CreateGameScreen() {
             <Text style={styles.label}>Status</Text>
 
             <View style={styles.optionRow}>
-              {["BACKLOG", "PLAYING", "COMPLETED"].map((item) => (
+              {statusOptions.map((item) => (
                 <TouchableOpacity
-                  key={item}
+                  key={item.code}
                   style={[
                     styles.optionButton,
-                    status === item && styles.selectedOption,
+                    status === item.code && styles.selectedOption,
                   ]}
-                  onPress={() => setStatus(item)}
+                  onPress={() => setStatus(item.code)}
                 >
-                  <Text style={styles.optionText}>{item}</Text>
+                  <Text style={styles.optionText}>{item.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -134,16 +162,16 @@ export default function CreateGameScreen() {
             <Text style={styles.label}>Tipo</Text>
 
             <View style={styles.optionRow}>
-              {["GAME", "DLC"].map((item) => (
+              {mediaTypeOptions.map((item) => (
                 <TouchableOpacity
-                  key={item}
+                  key={item.code}
                   style={[
                     styles.optionButton,
-                    mediaType === item && styles.selectedOption,
+                    mediaType === item.code && styles.selectedOption,
                   ]}
-                  onPress={() => setMediaType(item)}
+                  onPress={() => setMediaType(item.code)}
                 >
-                  <Text style={styles.optionText}>{item}</Text>
+                  <Text style={styles.optionText}>{item.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
