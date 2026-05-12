@@ -15,6 +15,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import placeholderImage from "../../../assets/images/placeholder.png";
 import { searchGames } from "../../../src/services/externalGameApi";
+import { addUserGame } from "../../../src/services/userGameApi";
 
 export default function CreateGameScreen() {
   // const [gameTitle, setGameTitle] = useState("");
@@ -59,24 +60,36 @@ export default function CreateGameScreen() {
     router.replace("/library");
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!selectedGame) {
-      alert("Selecione um jogo!");
+      alert("Selecione um jogo primeiro!");
       return;
     }
 
     if (!status || !mediaType) {
-      alert("Preencha status e tipo!");
+      alert("Selecione status e tipo!");
       return;
     }
 
-    console.log("Salvar jogo:", {
-      externalId: selectedGame.externalId,
-      name: selectedGame.name,
-      cover: selectedGame.backgroundImage,
-    });
+    try {
+      await addUserGame({
+        externalId: selectedGame.externalId,
+        status,
+        mediaType,
+      });
 
-    router.replace("/library");
+      alert("Jogo adicionado com sucesso!");
+
+      router.replace("/library");
+    } catch (error: any) {
+      console.log(error);
+
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert("Erro ao salvar jogo");
+      }
+    }
   }
 
   async function handleSearch(text: string) {

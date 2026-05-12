@@ -34,3 +34,12 @@ export async function getUserLibrary(
 
   return response.data;
 }
+
+export async function addUserGame(data: {
+  externalId: number;
+  status: string;
+  mediaType: string;
+}) {
+  const response = await api.post("/user-games/me/library", data);
+  return response.data;
+}
