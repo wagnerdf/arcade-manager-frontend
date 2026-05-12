@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import {
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,11 +12,14 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import SkeletonStats from "../../src/components/SkeletonStats";
 import { useAuth } from "../../src/context/AuthContext";
 import { getUserGameStats } from "../../src/services/userGameApi";
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(true);
 
   async function handleLogout() {
     try {
@@ -44,10 +48,30 @@ export default function HomeScreen() {
 
   async function loadStats() {
     try {
+      setLoading(true);
+      setShowLoading(true);
+
       const data = await getUserGameStats();
       setStats(data);
+
+      const start = Date.now();
+
+      const elapsed = Date.now() - start;
+      const MIN_TIME = 600; // 0.6s (ajuste fino UX)
+
+      if (elapsed < MIN_TIME) {
+        setTimeout(() => {
+          setLoading(false);
+          setShowLoading(false);
+        }, MIN_TIME - elapsed);
+      } else {
+        setLoading(false);
+        setShowLoading(false);
+      }
     } catch (error) {
       console.log("Erro ao buscar stats:", error);
+      setLoading(false);
+      setShowLoading(false);
     }
   }
 
@@ -77,16 +101,89 @@ export default function HomeScreen() {
         />
 
         {/* Stats reais */}
-        <View style={styles.statsContainer}>
-          <StatCard title="Jogos" value={stats.total} icon="game-controller" />
-          <StatCard title="Jogando" value={stats.playing} icon="play" />
-          <StatCard title="Zerados" value={stats.completed} icon="trophy" />
-        </View>
+        {showLoading ? (
+          Platform.OS === "web" ? (
+            <View style={{ marginTop: 20 }}>
+              {/* Linha 1 */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    width: "30%",
+                    height: 80,
+                    backgroundColor: "#1E293B",
+                    borderRadius: 12,
+                  }}
+                />
+                <View
+                  style={{
+                    width: "30%",
+                    height: 80,
+                    backgroundColor: "#1E293B",
+                    borderRadius: 12,
+                  }}
+                />
+                <View
+                  style={{
+                    width: "30%",
+                    height: 80,
+                    backgroundColor: "#1E293B",
+                    borderRadius: 12,
+                  }}
+                />
+              </View>
 
-        <View style={styles.statsContainer}>
-          <StatCard title="Backlog" value={stats.backlog} icon="albums" />
-          <StatCard title="Wishlist" value={stats.wishlist} icon="heart" />
-        </View>
+              {/* Linha 2 */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 12,
+                }}
+              >
+                <View
+                  style={{
+                    width: "48%",
+                    height: 80,
+                    backgroundColor: "#1E293B",
+                    borderRadius: 12,
+                  }}
+                />
+                <View
+                  style={{
+                    width: "48%",
+                    height: 80,
+                    backgroundColor: "#1E293B",
+                    borderRadius: 12,
+                  }}
+                />
+              </View>
+            </View>
+          ) : (
+            <SkeletonStats />
+          )
+        ) : (
+          <>
+            <View style={styles.statsContainer}>
+              <StatCard
+                title="Jogos"
+                value={stats.total}
+                icon="game-controller"
+              />
+              <StatCard title="Jogando" value={stats.playing} icon="play" />
+              <StatCard title="Zerados" value={stats.completed} icon="trophy" />
+            </View>
+
+            <View style={styles.statsContainer}>
+              <StatCard title="Backlog" value={stats.backlog} icon="albums" />
+              <StatCard title="Wishlist" value={stats.wishlist} icon="heart" />
+            </View>
+          </>
+        )}
 
         {/* AÇÕES */}
         <View style={styles.actionsContainer}>
