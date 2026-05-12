@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -35,9 +36,11 @@ export default function HomeScreen() {
     wishlist: 0,
   });
 
-  useEffect(() => {
-    loadStats();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadStats();
+    }, []),
+  );
 
   async function loadStats() {
     try {

@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   FlatList,
   Image,
@@ -16,9 +17,17 @@ export default function LibraryScreen() {
   const [games, setGames] = useState([]);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
-  useEffect(() => {
-    loadGames();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      if (isActive) loadGames();
+
+      return () => {
+        isActive = false;
+      };
+    }, []),
+  );
 
   async function loadGames() {
     try {
