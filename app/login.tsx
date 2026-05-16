@@ -31,28 +31,40 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      {/* HEADER */}
+      <View style={styles.header}>
+        <Text style={styles.logo}>🎮</Text>
+        <Text style={styles.title}>Arcade Manager</Text>
+        <Text style={styles.subtitle}>Organize e acompanhe seus jogos</Text>
+      </View>
+
+      {/* CARD */}
       <View style={styles.card}>
-        <Text style={styles.title}>🎮 Login</Text>
+        {/* EMAIL */}
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={20} color="#94A3B8" />
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor="#94A3B8"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            textContentType="emailAddress"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoCorrect={false}
+          />
+        </View>
 
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="#94A3B8"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          textContentType="emailAddress"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoCorrect={false}
-        />
-
-        <View style={styles.passwordContainer}>
+        {/* PASSWORD */}
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={20} color="#94A3B8" />
           <TextInput
             placeholder="Senha"
             placeholderTextColor="#94A3B8"
             value={password}
             onChangeText={setPassword}
-            style={styles.passwordInput}
+            style={styles.input}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -64,6 +76,7 @@ export default function Login() {
           </TouchableOpacity>
         </View>
 
+        {/* BUTTON */}
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
@@ -73,37 +86,72 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#0F172A",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+
+  passwordInput: {
+    flex: 1,
+    color: "#fff",
+    paddingVertical: 12,
+  },
+
   container: {
     flex: 1,
     backgroundColor: "#0F172A",
     justifyContent: "center",
-    alignItems: "center",
     padding: 20,
   },
 
-  card: {
-    width: "100%",
-    backgroundColor: "#1E293B",
-    padding: 24,
-    borderRadius: 16,
+  header: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+
+  logo: {
+    fontSize: 48,
+    marginBottom: 10,
   },
 
   title: {
     color: "#E2E8F0",
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
   },
 
-  input: {
+  subtitle: {
+    color: "#94A3B8",
+    fontSize: 14,
+    marginTop: 4,
+  },
+
+  card: {
+    backgroundColor: "#1E293B",
+    padding: 20,
+    borderRadius: 16,
+  },
+
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#0F172A",
-    color: "#E2E8F0",
-    padding: 14,
     borderRadius: 10,
+    paddingHorizontal: 12,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: "#334155",
+  },
+
+  input: {
+    flex: 1,
+    color: "#E2E8F0",
+    paddingVertical: 12,
+    marginLeft: 8,
   },
 
   button: {
@@ -118,20 +166,5 @@ const styles = StyleSheet.create({
     color: "#0F172A",
     fontWeight: "bold",
     fontSize: 16,
-  },
-
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#0F172A",
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-  },
-
-  passwordInput: {
-    flex: 1,
-    color: "#fff",
-    paddingVertical: 12,
   },
 });
