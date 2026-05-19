@@ -84,12 +84,6 @@ export default function HomeScreen() {
         Bem-vindo, {user?.fullName || "Usuário"}
       </Text>
 
-      <Text style={styles.info}>
-        {user ? `${user.address.city} - ${user.address.state}` : ""}
-      </Text>
-
-      <Text style={styles.info}>{user?.email || ""}</Text>
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
