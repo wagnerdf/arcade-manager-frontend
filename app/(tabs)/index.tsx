@@ -18,7 +18,6 @@ import { getUserGameStats } from "../../src/services/userGameApi";
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
-  const [loading, setLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(true);
 
   async function handleLogout() {
@@ -47,30 +46,26 @@ export default function HomeScreen() {
   );
 
   async function loadStats() {
+    const start = Date.now();
+
     try {
-      setLoading(true);
       setShowLoading(true);
 
       const data = await getUserGameStats();
       setStats(data);
 
-      const start = Date.now();
-
       const elapsed = Date.now() - start;
-      const MIN_TIME = 600; // 0.6s (ajuste fino UX)
+      const MIN_TIME = 600;
 
       if (elapsed < MIN_TIME) {
         setTimeout(() => {
-          setLoading(false);
           setShowLoading(false);
         }, MIN_TIME - elapsed);
       } else {
-        setLoading(false);
         setShowLoading(false);
       }
     } catch (error) {
       console.log("Erro ao buscar stats:", error);
-      setLoading(false);
       setShowLoading(false);
     }
   }
