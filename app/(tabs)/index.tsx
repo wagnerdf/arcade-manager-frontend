@@ -75,13 +75,21 @@ export default function HomeScreen() {
     }
   }
 
+  function getGreeting() {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return "Bom dia";
+    if (hour < 18) return "Boa tarde";
+    return "Boa noite";
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* HEADER */}
       <Text style={styles.title}>🎮 Arcade Manager</Text>
 
       <Text style={styles.subtitle}>
-        Bem-vindo, {user?.fullName || "Usuário"}
+        {getGreeting()}, {user?.fullName || "Usuário"}
       </Text>
 
       <ScrollView
